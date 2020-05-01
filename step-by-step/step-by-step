@@ -1,0 +1,2453 @@
+
+
+CORE CONCEPTS (13%)
+------------------------
+
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > task1.yml
+W0501 14:26:45.286668   25336 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > task2.yml 
+W0501 14:26:48.168951   25454 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+
+
+[root@k8s-master k8s-test]# kubectl create ns mynamespace 
+namespace/mynamespace created
+
+[root@k8s-master k8s-test]# kubectl create -f task2.yml -n mynamespace 
+pod/nginx created
+[root@k8s-master k8s-test]#
+
+
+
+[root@k8s-master k8s-test]# kubectl run busybox -it --image=busybox --restart=Never --command -- env 
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=busybox
+TERM=xterm
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+HOME=/root
+[root@k8s-master k8s-test]# 
+
+[root@k8s-master k8s-test]# kubectl logs busybox
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=busybox
+TERM=xterm
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+HOME=/root
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS      RESTARTS   AGE
+busybox   0/1     Completed   0          45s
+pod       0/1     Completed   0          6m3s
+
+[root@k8s-master k8s-test]# kubectl run busybox -it --image=busybox --restart=Never --command -- env 
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=busybox
+TERM=xterm
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl logs busybox
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=busybox
+TERM=xterm
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+HOME=/root
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS      RESTARTS   AGE
+busybox   0/1     Completed   0          45s
+pod       0/1     Completed   0          6m3s
+
+[root@k8s-master k8s-test]# kubectl run busyboxenv --image=busybox --restart=Never --dry-run -o yaml --command -- env > task4.yml
+W0501 14:14:52.864160   13672 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+task1.yml  task2.yml  task3.yml  task4.yml
+[root@k8s-master k8s-test]# cat task4.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: busyboxenv
+  name: busyboxenv
+spec:
+  containers:
+  - command:
+    - env
+    image: busybox
+    name: busyboxenv
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+[root@k8s-master k8s-test]# kubectl create -f task4.yml 
+pod/busyboxenv created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS              RESTARTS   AGE
+busybox      0/1     Completed           0          3m38s
+busyboxenv   0/1     ContainerCreating   0          7s
+pod          0/1     Completed           0          8m56s
+[root@k8s-master k8s-test]# kubectl logs busyboxenv
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=busyboxenv
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl create ns myns --dry-run -o yaml > task5.yml
+W0501 14:15:56.814338   14695 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# cat task5.yml 
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: myns
+spec: {}
+status: {}
+
+[root@k8s-master k8s-test]# kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run -o yaml > task6.yml
+W0501 14:18:08.301291   16757 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml
+[root@k8s-master k8s-test]# vim task6.yml 
+
+[root@k8s-master k8s-test]# kubectl get pods --all-namespaces
+NAMESPACE     NAME                                       READY   STATUS      RESTARTS   AGE
+default       busybox                                    0/1     Completed   0          6m48s
+default       busyboxenv                                 0/1     Completed   0          3m17s
+default       pod                                        0/1     Completed   0          12m
+kube-system   calico-kube-controllers-77c5fc8d7f-c6s56   1/1     Running     5          19d
+kube-system   calico-node-q4h56                          1/1     Running     5          19d
+kube-system   calico-node-vd9nd                          1/1     Running     9          19d
+kube-system   coredns-66bff467f8-8rgcg                   1/1     Running     5          19d
+kube-system   coredns-66bff467f8-lqdtz                   1/1     Running     5          19d
+kube-system   etcd-k8s-master                            1/1     Running     6          19d
+kube-system   kube-apiserver-k8s-master                  1/1     Running     8          19d
+kube-system   kube-controller-manager-k8s-master         1/1     Running     34         19d
+kube-system   kube-proxy-7sgcz                           1/1     Running     5          19d
+kube-system   kube-proxy-g9769                           1/1     Running     5          19d
+kube-system   kube-scheduler-k8s-master                  1/1     Running     38         19d
+mynamespace   nginx                                      0/1     Completed   0          10m
+[root@k8s-master k8s-test]# 
+
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --port 80 --dry-run -o yaml > task7.yml
+W0501 14:28:14.829712   27024 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+
+[root@k8s-master k8s-test]# vim task7.yml 
+[root@k8s-master k8s-test]# kubectl create -f task7.yml 
+pod/nginxtask7 created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS              RESTARTS   AGE
+busybox      0/1     Completed           0          17m
+busyboxenv   0/1     Completed           0          13m
+nginx        1/1     Running             0          3m24s
+nginxtask7   0/1     ContainerCreating   0          3s
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          17m
+busyboxenv   0/1     Completed   0          13m
+nginx        1/1     Running     0          3m40s
+nginxtask7   1/1     Running     0          19s
+[root@k8s-master k8s-test]# kubectl set image pod nginx nginx=nginx:1.7.1
+pod/nginx image updated
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          17m
+busyboxenv   0/1     Completed   0          14m
+nginx        1/1     Running     0          4m8s
+nginxtask7   1/1     Running     0          47s
+[root@k8s-master k8s-test]# kubectl get pods -w
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          17m
+busyboxenv   0/1     Completed   0          14m
+nginx        1/1     Running     0          4m10s
+nginxtask7   1/1     Running     0          49s
+^C[root@k8s-master k8s-test]# kubectl describe pod nginx
+Name:         nginx
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 14:25:24 +0530
+Labels:       run=nginx
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.162/32
+Status:       Running
+IP:           192.168.254.162
+IPs:
+  IP:  192.168.254.162
+Containers:
+  nginx:
+    Container ID:   docker://ee37badd6eca2fc5a6e667f924d47d24201d892ad79377fa48b93e397e72a613
+    Image:          nginx:1.7.1
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+
+[root@k8s-master k8s-test]# kubectl run busybox1 --image=busybox -it --restart=Never -- echo 'hello world'
+hello world
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          29m
+busybox1     0/1     Completed   0          20s
+busyboxenv   0/1     Completed   0          26m
+nginx        0/1     Completed   0          15m
+nginxtask7   0/1     Completed   0          12m
+[root@k8s-master k8s-test]# kubectl run busybox2 --image=busybox --rm -it --restart=Never -- echo 'hello world'
+
+
+
+
+hello world
+pod "busybox2" deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --env=var1=var1 --dry-run -o yaml 
+W0501 14:42:32.129261    8856 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - env:
+    - name: var1
+      value: var1
+    image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --env=var1=var1 --dry-run -o yaml > task10.yml
+W0501 14:42:44.648599    9044 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+[root@k8s-master k8s-test]# vim task10.yml 
+
+[root@k8s-master k8s-test]# kubectl create -f task10.yml 
+Error from server (AlreadyExists): error when creating "task10.yml": pods "nginx" already exists
+[root@k8s-master k8s-test]# vim task10.yml 
+[root@k8s-master k8s-test]# kubectl create -f task10.yml 
+pod/nginxtask10 created
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 
+Name:         nginxtask10
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 14:43:19 +0530
+Labels:       run=nginxtask10
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.170/32
+Status:       Pending
+IP:           
+IPs:          <none>
+Containers:
+  nginx:
+    Container ID:   
+    Image:          nginx
+    Image ID:       
+    Port:           <none>
+    Host Port:      <none>
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Environment:
+      var1:  var1
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginxtask10 to k8s-worker
+  Normal  Pulling    7s         kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     3s         kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    2s         kubelet, k8s-worker  Created container nginx
+  Normal  Started    0s         kubelet, k8s-worker  Started container nginx
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 | grep val
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 | grep val1
+[root@k8s-master k8s-test]# kubectl get pods
+NAME          READY   STATUS      RESTARTS   AGE
+busybox       0/1     Completed   0          32m
+busybox1      0/1     Completed   0          2m41s
+busyboxenv    0/1     Completed   0          28m
+nginx         0/1     Completed   0          18m
+nginxtask10   1/1     Running     0          25s
+nginxtask7    0/1     Completed   0          14m
+[root@k8s-master k8s-test]# kubectl exec -it nginx -- env
+error: cannot exec into a container in a completed pod; current phase is Succeeded
+[root@k8s-master k8s-test]# kubectl exec -it nginxtask10 -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginxtask10
+TERM=xterm
+var1=var1
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+NGINX_VERSION=1.17.10
+NJS_VERSION=0.3.9
+PKG_RELEASE=1~buster
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# ls
+task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+[root@k8s-master k8s-test]# kubectl run busyboxmulti --image=busybox --restart=Never -o yaml --dry-run > multicon.yml
+W0501 14:44:59.448190   11231 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+multicon.yml  task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+[root@k8s-master k8s-test]# vim multicon.yml 
+[root@k8s-master k8s-test]# vim multicon.yml 
+[root@k8s-master k8s-test]# kubectl create -f multicon.yml 
+pod/busyboxmulti created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          6m46s
+busyboxenv     0/1     Completed           0          32m
+busyboxmulti   0/2     ContainerCreating   0          10s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m30s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          7m6s
+busyboxenv     0/1     Completed           0          33m
+busyboxmulti   0/2     ContainerCreating   0          30s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m50s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# kubectl get pods
+
+
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          7m11s
+busyboxenv     0/1     Completed           0          33m
+busyboxmulti   0/2     ContainerCreating   0          35s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m55s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti 
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti1
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti2
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti2 /bin/sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+Error from server (BadRequest): container busyboxmulti2 is not valid for pod busyboxmulti
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti1 /bin/sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+/ # 
+/ # 
+/ # ls
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+
+[root@k8s-master k8s-test]# kubectl run busybox1 --image=busybox -it --restart=Never -- echo 'hello world'
+hello world
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          29m
+busybox1     0/1     Completed   0          20s
+busyboxenv   0/1     Completed   0          26m
+nginx        0/1     Completed   0          15m
+nginxtask7   0/1     Completed   0          12m
+[root@k8s-master k8s-test]# kubectl run busybox2 --image=busybox --rm -it --restart=Never -- echo 'hello world'
+
+
+
+
+hello world
+pod "busybox2" deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --env=var1=var1 --dry-run -o yaml 
+W0501 14:42:32.129261    8856 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - env:
+    - name: var1
+      value: var1
+    image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --env=var1=var1 --dry-run -o yaml > task10.yml
+W0501 14:42:44.648599    9044 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+[root@k8s-master k8s-test]# vim task10.yml 
+
+[root@k8s-master k8s-test]# kubectl create -f task10.yml 
+Error from server (AlreadyExists): error when creating "task10.yml": pods "nginx" already exists
+[root@k8s-master k8s-test]# vim task10.yml 
+[root@k8s-master k8s-test]# kubectl create -f task10.yml 
+pod/nginxtask10 created
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 
+Name:         nginxtask10
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 14:43:19 +0530
+Labels:       run=nginxtask10
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.170/32
+Status:       Pending
+IP:           
+IPs:          <none>
+Containers:
+  nginx:
+    Container ID:   
+    Image:          nginx
+    Image ID:       
+    Port:           <none>
+    Host Port:      <none>
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Environment:
+      var1:  var1
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginxtask10 to k8s-worker
+  Normal  Pulling    7s         kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     3s         kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    2s         kubelet, k8s-worker  Created container nginx
+  Normal  Started    0s         kubelet, k8s-worker  Started container nginx
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 | grep val
+[root@k8s-master k8s-test]# kubectl describe pod nginxtask10 | grep val1
+[root@k8s-master k8s-test]# kubectl get pods
+NAME          READY   STATUS      RESTARTS   AGE
+busybox       0/1     Completed   0          32m
+busybox1      0/1     Completed   0          2m41s
+busyboxenv    0/1     Completed   0          28m
+nginx         0/1     Completed   0          18m
+nginxtask10   1/1     Running     0          25s
+nginxtask7    0/1     Completed   0          14m
+[root@k8s-master k8s-test]# kubectl exec -it nginx -- env
+error: cannot exec into a container in a completed pod; current phase is Succeeded
+[root@k8s-master k8s-test]# kubectl exec -it nginxtask10 -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginxtask10
+TERM=xterm
+var1=var1
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+NGINX_VERSION=1.17.10
+NJS_VERSION=0.3.9
+PKG_RELEASE=1~buster
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# ls
+task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+
+
+
+
+MULTI-CONTAINER POD (10%)
+----------------------------
+[root@k8s-master k8s-test]# kubectl run busyboxmulti --image=busybox --restart=Never -o yaml --dry-run > multicon.yml
+W0501 14:44:59.448190   11231 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+multicon.yml  task10.yml  task1.yml  task2.yml  task3.yml  task4.yml  task5.yml  task6.yml  task7.yml
+[root@k8s-master k8s-test]# vim multicon.yml 
+[root@k8s-master k8s-test]# vim multicon.yml 
+[root@k8s-master k8s-test]# kubectl create -f multicon.yml 
+pod/busyboxmulti created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          6m46s
+busyboxenv     0/1     Completed           0          32m
+busyboxmulti   0/2     ContainerCreating   0          10s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m30s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          7m6s
+busyboxenv     0/1     Completed           0          33m
+busyboxmulti   0/2     ContainerCreating   0          30s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m50s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# kubectl get pods
+
+
+NAME           READY   STATUS              RESTARTS   AGE
+busybox        0/1     Completed           0          36m
+busybox1       0/1     Completed           0          7m11s
+busyboxenv     0/1     Completed           0          33m
+busyboxmulti   0/2     ContainerCreating   0          35s
+nginx          0/1     Completed           0          22m
+nginxtask10    1/1     Running             0          4m55s
+nginxtask7     0/1     Completed           0          19m
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti 
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti1
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti2
+error: you must specify at least one command for the container
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti2 /bin/sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+Error from server (BadRequest): container busyboxmulti2 is not valid for pod busyboxmulti
+[root@k8s-master k8s-test]# kubectl exec -it busyboxmulti -c busyboxmulti1 /bin/sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+/ # 
+/ # 
+/ # ls
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+
+
+
+POD DESIGN (20%)
+---------------------------
+[root@k8s-master k8s-test]# kubectl run nginx1 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd1.yml
+W0501 14:49:57.819506   15986 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl run nginx2 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd2.yml
+W0501 14:50:09.258121   16164 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl run nginx3 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd3.yml
+W0501 14:50:15.879951   16243 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl create -f podd1.yml 
+pod/nginx1 created
+[root@k8s-master k8s-test]# kubectl create -f podd2.yml 
+pod/nginx2 created
+[root@k8s-master k8s-test]# kubectl create -f podd32
+^C^[[A
+[root@k8s-master k8s-test]# kubectl create -f podd3.yml 
+pod/nginx3 created
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS              RESTARTS   AGE     LABELS
+busybox        0/1     Completed           0          39m     run=busybox
+busybox1       0/1     Completed           0          9m45s   run=busybox1
+busyboxenv     0/1     Completed           0          35m     run=busyboxenv
+busyboxmulti   2/2     Running             0          3m9s    run=busyboxmulti
+nginx          0/1     Completed           0          25m     run=nginx
+nginx1         0/1     ContainerCreating   0          21s     app=v1
+nginx2         0/1     ContainerCreating   0          17s     app=v1
+nginx3         0/1     ContainerCreating   0          11s     app=v1
+nginxtask10    1/1     Running             0          7m29s   run=nginxtask10
+nginxtask7     0/1     Completed           0          22m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl label po nginx2 app=v2 --overwrite
+pod/nginx2 labeled
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS              RESTARTS   AGE     LABELS
+busybox        0/1     Completed           0          39m     run=busybox
+busybox1       0/1     Completed           0          9m59s   run=busybox1
+busyboxenv     0/1     Completed           0          35m     run=busyboxenv
+busyboxmulti   2/2     Running             0          3m23s   run=busyboxmulti
+nginx          0/1     Completed           0          25m     run=nginx
+nginx1         1/1     Running             0          35s     app=v1
+nginx2         0/1     ContainerCreating   0          31s     app=v2
+nginx3         0/1     ContainerCreating   0          25s     app=v1
+nginxtask10    1/1     Running             0          7m43s   run=nginxtask10
+nginxtask7     0/1     Completed           0          22m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl get po -L app
+NAME           READY   STATUS      RESTARTS   AGE     APP
+busybox        0/1     Completed   0          39m     
+busybox1       0/1     Completed   0          10m     
+busyboxenv     0/1     Completed   0          36m     
+busyboxmulti   2/2     Running     0          3m38s   
+nginx          0/1     Completed   0          25m     
+nginx1         1/1     Running     0          50s     v1
+nginx2         1/1     Running     0          46s     v2
+nginx3         1/1     Running     0          40s     v1
+nginxtask10    1/1     Running     0          7m58s   
+nginxtask7     0/1     Completed   0          22m     
+[root@k8s-master k8s-test]# kubectl get po --selector=app=v2
+NAME     READY   STATUS    RESTARTS   AGE
+nginx2   1/1     Running   0          76s
+[root@k8s-master k8s-test]# kubectl get po --selector=app
+NAME     READY   STATUS    RESTARTS   AGE
+nginx1   1/1     Running   0          90s
+nginx2   1/1     Running   0          86s
+nginx3   1/1     Running   0          80s
+[root@k8s-master k8s-test]# kubectl get po -l app=v2
+NAME     READY   STATUS    RESTARTS   AGE
+nginx2   1/1     Running   0          97s
+[root@k8s-master k8s-test]# kubectl label po nginx1 nginx2 nginx3 app-
+[root@k8s-master k8s-test]# kubectl label po nginx1  app-
+pod/nginx1 labeled
+[root@k8s-master k8s-test]# kubectl label po nginx2  app-
+pod/nginx2 labeled
+[root@k8s-master k8s-test]# kubectl label po nginx3  app-
+pod/nginx3 labeled
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS      RESTARTS   AGE     LABELS
+busybox        0/1     Completed   0          41m     run=busybox
+busybox1       0/1     Completed   0          11m     run=busybox1
+busyboxenv     0/1     Completed   0          37m     run=busyboxenv
+busyboxmulti   2/2     Running     0          4m59s   run=busyboxmulti
+nginx          0/1     Completed   0          27m     run=nginx
+nginx1         1/1     Running     0          2m11s   <none>
+nginx2         1/1     Running     0          2m7s    <none>
+nginx3         1/1     Running     0          2m1s    <none>
+nginxtask10    1/1     Running     0          9m19s   run=nginxtask10
+nginxtask7     0/1     Completed   0          23m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl run alpine --image=alpine --restart=Never --dry-run -o yaml > podlabel.yml
+W0501 14:54:04.302592   20040 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+multicon.yml  podd2.yml  podlabel.yml  task1.yml  task3.yml  task5.yml  task7.yml
+podd1.yml     podd3.yml  task10.yml    task2.yml  task4.yml  task6.yml
+[root@k8s-master k8s-test]# vim podlabel.yml 
+[root@k8s-master k8s-test]# kubectl create -f podlabel.yml 
+pod/alpine created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS      RESTARTS   AGE
+alpine         0/1     Pending     0          4s
+busybox        0/1     Completed   0          43m
+busybox1       0/1     Completed   0          13m
+busyboxenv     0/1     Completed   0          39m
+busyboxmulti   2/2     Running     0          7m18s
+nginx          0/1     Completed   0          29m
+nginx1         1/1     Running     0          4m30s
+nginx2         1/1     Running     0          4m26s
+nginx3         1/1     Running     0          4m20s
+nginxtask10    1/1     Running     0          11m
+nginxtask7     0/1     Completed   0          26m
+[root@k8s-master k8s-test]# kubectl annotate po nginx1  description='my description'
+pod/nginx1 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx2  description='my description'
+pod/nginx2 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx3  description='my description'
+pod/nginx3 annotated
+[root@k8s-master k8s-test]# kubectl describe po nginx1 | grep -i 'annotations'
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl describe po nginx1 | grep -i 'Annotations'
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl annotate po nginx3  "description='my description'"
+error: --overwrite is false but found the following declared annotation(s): 'description' already has a value (my description)
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep Annotations
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl describe pod nginx1
+Name:         nginx1
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 14:50:27 +0530
+Labels:       <none>
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+              description: my description
+Status:       Running
+IP:           192.168.254.172
+IPs:
+  IP:  192.168.254.172
+Containers:
+  nginx1:
+    Container ID:   docker://e64402957ac7aa44141b342736312b5023d321903b803e98479c0c7e19e9382c
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 01 May 2020 14:50:56 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginx1 to k8s-worker
+  Normal  Pulling    5m57s      kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     5m54s      kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    5m45s      kubelet, k8s-worker  Created container nginx1
+  Normal  Started    5m39s      kubelet, k8s-worker  Started container nginx1
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep Annotations
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep description
+              description: my description
+[root@k8s-master k8s-test]# kubectl annotate po nginx1 description-
+pod/nginx1 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx2 description-
+pod/nginx2 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx3 description-
+pod/nginx3 annotated
+[root@k8s-master k8s-test]# kubectl delete pods --all 
+pod "alpine" deleted
+pod "busybox" deleted
+pod "busybox1" deleted
+pod "busyboxenv" deleted
+pod "busyboxmulti" deleted
+pod "nginx" deleted
+pod "nginx1" deleted
+pod "nginx2" deleted
+pod "nginx3" deleted
+pod "nginxtask10" deleted
+pod "nginxtask7" deleted
+^C
+[root@k8s-master k8s-test]# 
+
+
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS        RESTARTS   AGE
+busyboxmulti   2/2     Terminating   0          10m
+nginx1         0/1     Terminating   0          7m47s
+nginx3         0/1     Terminating   0          7m37s
+[root@k8s-master k8s-test]# kubectl create deployment nginx  --image=nginx:1.7.8  --dry-run -o yaml > deploy1.yaml
+W0501 14:58:50.909101   24679 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# vim task
+task10.yml  task1.yml   task2.yml   task3.yml   task4.yml   task5.yml   task6.yml   task7.yml
+[root@k8s-master k8s-test]# ls
+deploy1.yaml  podd1.yml  podd3.yml     task10.yml  task2.yml  task4.yml  task6.yml
+multicon.yml  podd2.yml  podlabel.yml  task1.yml   task3.yml  task5.yml  task7.yml
+[root@k8s-master k8s-test]# vim task10.yml 
+[root@k8s-master k8s-test]# vim task7.yml 
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# vim task7.yml 
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# kubectl create -f deploy1.yaml 
+
+
+
+[root@k8s-master k8s-test]# kubectl create -f deploy1.yaml 
+deployment.apps/nginx created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg   0/1     ContainerCreating   0          12s
+nginx-5b6f47948-gsf97   0/1     ContainerCreating   0          12s
+[root@k8s-master k8s-test]# kubectl get deployment 
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   0/2     2            0           17s
+[root@k8s-master k8s-test]# kubectl get deployment nginx -o yaml 
+
+[root@k8s-master k8s-test]# kubectl run nginx1 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd1.yml
+W0501 14:49:57.819506   15986 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl run nginx2 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd2.yml
+W0501 14:50:09.258121   16164 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl run nginx3 --image=nginx --restart=Never --labels=app=v1 --dry-run -o yaml > podd3.yml
+W0501 14:50:15.879951   16243 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl create -f podd1.yml 
+pod/nginx1 created
+[root@k8s-master k8s-test]# kubectl create -f podd2.yml 
+pod/nginx2 created
+[root@k8s-master k8s-test]# kubectl create -f podd32
+^C^[[A
+[root@k8s-master k8s-test]# kubectl create -f podd3.yml 
+pod/nginx3 created
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS              RESTARTS   AGE     LABELS
+busybox        0/1     Completed           0          39m     run=busybox
+busybox1       0/1     Completed           0          9m45s   run=busybox1
+busyboxenv     0/1     Completed           0          35m     run=busyboxenv
+busyboxmulti   2/2     Running             0          3m9s    run=busyboxmulti
+nginx          0/1     Completed           0          25m     run=nginx
+nginx1         0/1     ContainerCreating   0          21s     app=v1
+nginx2         0/1     ContainerCreating   0          17s     app=v1
+nginx3         0/1     ContainerCreating   0          11s     app=v1
+nginxtask10    1/1     Running             0          7m29s   run=nginxtask10
+nginxtask7     0/1     Completed           0          22m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl label po nginx2 app=v2 --overwrite
+pod/nginx2 labeled
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS              RESTARTS   AGE     LABELS
+busybox        0/1     Completed           0          39m     run=busybox
+busybox1       0/1     Completed           0          9m59s   run=busybox1
+busyboxenv     0/1     Completed           0          35m     run=busyboxenv
+busyboxmulti   2/2     Running             0          3m23s   run=busyboxmulti
+nginx          0/1     Completed           0          25m     run=nginx
+nginx1         1/1     Running             0          35s     app=v1
+nginx2         0/1     ContainerCreating   0          31s     app=v2
+nginx3         0/1     ContainerCreating   0          25s     app=v1
+nginxtask10    1/1     Running             0          7m43s   run=nginxtask10
+nginxtask7     0/1     Completed           0          22m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl get po -L app
+NAME           READY   STATUS      RESTARTS   AGE     APP
+busybox        0/1     Completed   0          39m     
+busybox1       0/1     Completed   0          10m     
+busyboxenv     0/1     Completed   0          36m     
+busyboxmulti   2/2     Running     0          3m38s   
+nginx          0/1     Completed   0          25m     
+nginx1         1/1     Running     0          50s     v1
+nginx2         1/1     Running     0          46s     v2
+nginx3         1/1     Running     0          40s     v1
+nginxtask10    1/1     Running     0          7m58s   
+nginxtask7     0/1     Completed   0          22m     
+[root@k8s-master k8s-test]# kubectl get po --selector=app=v2
+NAME     READY   STATUS    RESTARTS   AGE
+nginx2   1/1     Running   0          76s
+[root@k8s-master k8s-test]# kubectl get po --selector=app
+NAME     READY   STATUS    RESTARTS   AGE
+nginx1   1/1     Running   0          90s
+nginx2   1/1     Running   0          86s
+nginx3   1/1     Running   0          80s
+[root@k8s-master k8s-test]# kubectl get po -l app=v2
+NAME     READY   STATUS    RESTARTS   AGE
+nginx2   1/1     Running   0          97s
+[root@k8s-master k8s-test]# kubectl label po nginx1 nginx2 nginx3 app-
+[root@k8s-master k8s-test]# kubectl label po nginx1  app-
+pod/nginx1 labeled
+[root@k8s-master k8s-test]# kubectl label po nginx2  app-
+pod/nginx2 labeled
+[root@k8s-master k8s-test]# kubectl label po nginx3  app-
+pod/nginx3 labeled
+[root@k8s-master k8s-test]# kubectl get po --show-labels
+NAME           READY   STATUS      RESTARTS   AGE     LABELS
+busybox        0/1     Completed   0          41m     run=busybox
+busybox1       0/1     Completed   0          11m     run=busybox1
+busyboxenv     0/1     Completed   0          37m     run=busyboxenv
+busyboxmulti   2/2     Running     0          4m59s   run=busyboxmulti
+nginx          0/1     Completed   0          27m     run=nginx
+nginx1         1/1     Running     0          2m11s   <none>
+nginx2         1/1     Running     0          2m7s    <none>
+nginx3         1/1     Running     0          2m1s    <none>
+nginxtask10    1/1     Running     0          9m19s   run=nginxtask10
+nginxtask7     0/1     Completed   0          23m     run=nginxtask7
+[root@k8s-master k8s-test]# kubectl run alpine --image=alpine --restart=Never --dry-run -o yaml > podlabel.yml
+W0501 14:54:04.302592   20040 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# ls
+multicon.yml  podd2.yml  podlabel.yml  task1.yml  task3.yml  task5.yml  task7.yml
+podd1.yml     podd3.yml  task10.yml    task2.yml  task4.yml  task6.yml
+[root@k8s-master k8s-test]# vim podlabel.yml 
+[root@k8s-master k8s-test]# kubectl create -f podlabel.yml 
+pod/alpine created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS      RESTARTS   AGE
+alpine         0/1     Pending     0          4s
+busybox        0/1     Completed   0          43m
+busybox1       0/1     Completed   0          13m
+busyboxenv     0/1     Completed   0          39m
+busyboxmulti   2/2     Running     0          7m18s
+nginx          0/1     Completed   0          29m
+nginx1         1/1     Running     0          4m30s
+nginx2         1/1     Running     0          4m26s
+nginx3         1/1     Running     0          4m20s
+nginxtask10    1/1     Running     0          11m
+nginxtask7     0/1     Completed   0          26m
+[root@k8s-master k8s-test]# kubectl annotate po nginx1  description='my description'
+pod/nginx1 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx2  description='my description'
+pod/nginx2 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx3  description='my description'
+pod/nginx3 annotated
+[root@k8s-master k8s-test]# kubectl describe po nginx1 | grep -i 'annotations'
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl describe po nginx1 | grep -i 'Annotations'
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl annotate po nginx3  "description='my description'"
+error: --overwrite is false but found the following declared annotation(s): 'description' already has a value (my description)
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep Annotations
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# kubectl describe pod nginx1
+Name:         nginx1
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 14:50:27 +0530
+Labels:       <none>
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+              description: my description
+Status:       Running
+IP:           192.168.254.172
+IPs:
+  IP:  192.168.254.172
+Containers:
+  nginx1:
+    Container ID:   docker://e64402957ac7aa44141b342736312b5023d321903b803e98479c0c7e19e9382c
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 01 May 2020 14:50:56 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginx1 to k8s-worker
+  Normal  Pulling    5m57s      kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     5m54s      kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    5m45s      kubelet, k8s-worker  Created container nginx1
+  Normal  Started    5m39s      kubelet, k8s-worker  Started container nginx1
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep Annotations
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.172/32
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl describe pod nginx1 | grep description
+              description: my description
+[root@k8s-master k8s-test]# kubectl annotate po nginx1 description-
+pod/nginx1 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx2 description-
+pod/nginx2 annotated
+[root@k8s-master k8s-test]# kubectl annotate po nginx3 description-
+pod/nginx3 annotated
+[root@k8s-master k8s-test]# kubectl delete pods --all 
+pod "alpine" deleted
+pod "busybox" deleted
+pod "busybox1" deleted
+pod "busyboxenv" deleted
+pod "busyboxmulti" deleted
+pod "nginx" deleted
+pod "nginx1" deleted
+pod "nginx2" deleted
+pod "nginx3" deleted
+pod "nginxtask10" deleted
+pod "nginxtask7" deleted
+^C
+[root@k8s-master k8s-test]# 
+
+
+[root@k8s-master k8s-test]# kubectl get pods
+NAME           READY   STATUS        RESTARTS   AGE
+busyboxmulti   2/2     Terminating   0          10m
+nginx1         0/1     Terminating   0          7m47s
+nginx3         0/1     Terminating   0          7m37s
+[root@k8s-master k8s-test]# kubectl create deployment nginx  --image=nginx:1.7.8  --dry-run -o yaml > deploy1.yaml
+W0501 14:58:50.909101   24679 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# vim task
+task10.yml  task1.yml   task2.yml   task3.yml   task4.yml   task5.yml   task6.yml   task7.yml
+[root@k8s-master k8s-test]# ls
+deploy1.yaml  podd1.yml  podd3.yml     task10.yml  task2.yml  task4.yml  task6.yml
+multicon.yml  podd2.yml  podlabel.yml  task1.yml   task3.yml  task5.yml  task7.yml
+[root@k8s-master k8s-test]# vim task10.yml 
+[root@k8s-master k8s-test]# vim task7.yml 
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# vim task7.yml 
+[root@k8s-master k8s-test]# vim deploy1.yaml 
+[root@k8s-master k8s-test]# kubectl create -f deploy1.yaml 
+
+
+
+[root@k8s-master k8s-test]# kubectl create -f deploy1.yaml 
+deployment.apps/nginx created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                    READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg   0/1     ContainerCreating   0          12s
+nginx-5b6f47948-gsf97   0/1     ContainerCreating   0          12s
+[root@k8s-master k8s-test]# kubectl get deployment 
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   0/2     2            0           17s
+[root@k8s-master k8s-test]# kubectl get deployment nginx -o yaml 
+
+
+
+[root@k8s-master k8s-test]# kubectl get rs 
+NAME              DESIRED   CURRENT   READY   AGE
+nginx-5b6f47948   2         2         2       63s
+[root@k8s-master k8s-test]# kubectl get rs nginx-5b6f47948 -o yaml 
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  annotations:
+    deployment.kubernetes.io/desired-replicas: "2"
+    deployment.kubernetes.io/max-replicas: "3"
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: "2020-05-01T09:30:37Z"
+  generation: 1
+  labels:
+    app: nginx
+    pod-template-hash: 5b6f47948
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+  fullyLabeledReplicas: 2
+  observedGeneration: 1
+  readyReplicas: 2
+  replicas: 2
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+nginx-5b6f47948-fp2bg   1/1     Running   0          81s
+nginx-5b6f47948-gsf97   1/1     Running   0          81s
+[root@k8s-master k8s-test]# kubectl get pods nginx-5b6f47948-fp2bg -o yaml 
+
+
+
+
+
+
+[root@k8s-master k8s-test]# kubectl rollout status deployment nginx
+deployment "nginx" successfully rolled out
+[root@k8s-master k8s-test]# kubectl get deployment 
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   2/2     2            2           2m
+[root@k8s-master k8s-test]# kubectl set image deployment nginx nginx=nginx:1.7.9
+deployment.apps/nginx image updated
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg    1/1     Running             0          2m35s
+nginx-5b6f47948-gsf97    1/1     Running             0          2m35s
+nginx-5bf87f5f59-zzqxh   0/1     ContainerCreating   0          21s
+[root@k8s-master k8s-test]# kubectl get pods -w
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg    1/1     Running             0          2m40s
+nginx-5b6f47948-gsf97    1/1     Running             0          2m40s
+nginx-5bf87f5f59-zzqxh   0/1     ContainerCreating   0          26s
+^C[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg    1/1     Running             0          3m2s
+nginx-5b6f47948-gsf97    1/1     Running             0          3m2s
+nginx-5bf87f5f59-zzqxh   0/1     ContainerCreating   0          48s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg    1/1     Running             0          3m3s
+nginx-5b6f47948-gsf97    1/1     Running             0          3m3s
+nginx-5bf87f5f59-zzqxh   0/1     ContainerCreating   0          49s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-fp2bg    1/1     Running             0          3m5s
+nginx-5b6f47948-gsf97    1/1     Running             0          3m5s
+nginx-5bf87f5f59-zzqxh   0/1     ContainerCreating   0          51s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS        RESTARTS   AGE
+nginx-5b6f47948-fp2bg    0/1     Terminating   0          3m28s
+nginx-5bf87f5f59-wlsx8   1/1     Running       0          21s
+nginx-5bf87f5f59-zzqxh   1/1     Running       0          74s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS        RESTARTS   AGE
+nginx-5b6f47948-fp2bg    0/1     Terminating   0          3m30s
+nginx-5bf87f5f59-wlsx8   1/1     Running       0          23s
+nginx-5bf87f5f59-zzqxh   1/1     Running       0          76s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS        RESTARTS   AGE
+nginx-5b6f47948-fp2bg    0/1     Terminating   0          3m32s
+nginx-5bf87f5f59-wlsx8   1/1     Running       0          25s
+nginx-5bf87f5f59-zzqxh   1/1     Running       0          78s
+[root@k8s-master k8s-test]# kubectl describe pod nginx-5bf87f5f59-wlsx8 
+Name:         nginx-5bf87f5f59-wlsx8
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 15:03:44 +0530
+Labels:       app=nginx
+              pod-template-hash=5bf87f5f59
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.178/32
+Status:       Running
+IP:           192.168.254.178
+IPs:
+  IP:           192.168.254.178
+Controlled By:  ReplicaSet/nginx-5bf87f5f59
+Containers:
+  nginx:
+    Container ID:   docker://abeac3a24ce8fefc7950ab62903b8bc7dc89313238db2a404f79fdd9422a611b
+    Image:          nginx:1.7.9
+    Image ID:       docker-pullable://nginx@sha256:e3456c851a152494c3e4ff5fcc26f240206abac0c9d794affb40e0714846c451
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 01 May 2020 15:03:56 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginx-5bf87f5f59-wlsx8 to k8s-worker
+  Normal  Pulled     32s        kubelet, k8s-worker  Container image "nginx:1.7.9" already present on machine
+  Normal  Created    31s        kubelet, k8s-worker  Created container nginx
+  Normal  Started    30s        kubelet, k8s-worker  Started container nginx
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl describe pod nginx-5bf87f5f59-wlsx8 | grep Image
+    Image:          nginx:1.7.9
+    Image ID:       docker-pullable://nginx@sha256:e3456c851a152494c3e4ff5fcc26f240206abac0c9d794affb40e0714846c451
+[root@k8s-master k8s-test]# kubectl rollout undo deployment nginx
+deployment.apps/nginx rolled back
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-zq94h    0/1     ContainerCreating   0          2s
+nginx-5bf87f5f59-wlsx8   1/1     Running             0          62s
+nginx-5bf87f5f59-zzqxh   1/1     Running             0          115s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-zq94h    0/1     ContainerCreating   0          3s
+nginx-5bf87f5f59-wlsx8   1/1     Running             0          63s
+nginx-5bf87f5f59-zzqxh   1/1     Running             0          116s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-nrrcj    0/1     ContainerCreating   0          5s
+nginx-5b6f47948-zq94h    1/1     Running             0          14s
+nginx-5bf87f5f59-wlsx8   1/1     Terminating         0          74s
+nginx-5bf87f5f59-zzqxh   1/1     Running             0          2m7s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-nrrcj    0/1     ContainerCreating   0          7s
+nginx-5b6f47948-zq94h    1/1     Running             0          16s
+nginx-5bf87f5f59-wlsx8   1/1     Terminating         0          76s
+nginx-5bf87f5f59-zzqxh   1/1     Running             0          2m9s
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-nrrcj    0/1     ContainerCreating   0          9s
+nginx-5b6f47948-zq94h    1/1     Running             0          18s
+nginx-5bf87f5f59-wlsx8   1/1     Terminating         0          78s
+nginx-5bf87f5f59-zzqxh   1/1     Running             0          2m11s
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS        RESTARTS   AGE
+nginx-5b6f47948-nrrcj    1/1     Running       0          15s
+nginx-5b6f47948-zq94h    1/1     Running       0          24s
+nginx-5bf87f5f59-zzqxh   1/1     Terminating   0          2m17s
+[root@k8s-master k8s-test]# kubectl describe pod nginx-5b6f47948-nrrcj | grep Image
+    Image:          nginx:1.7.8
+    Image ID:       docker-pullable://nginx@sha256:2c390758c6a4660d93467ce5e70e8d08d6e401f748bffba7885ce160ca7e481d
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl set image deployment nginx nginx=nginx:1.91
+deployment.apps/nginx image updated
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-nrrcj    1/1     Running             0          45s
+nginx-5b6f47948-zq94h    1/1     Running             0          54s
+nginx-7789688b8f-j7nnc   0/1     ContainerCreating   0          2s
+[root@k8s-master k8s-test]# kubectl rollout status deploy nginx
+Waiting for deployment "nginx" rollout to finish: 1 out of 2 new replicas have been updated...
+^C[root@k8s-master k8s-test]# kubectl rollout status deployment nginx
+Waiting for deployment "nginx" rollout to finish: 1 out of 2 new replicas have been updated...
+^C[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS         RESTARTS   AGE
+nginx-5b6f47948-nrrcj    1/1     Running        0          62s
+nginx-5b6f47948-zq94h    1/1     Running        0          71s
+nginx-7789688b8f-j7nnc   0/1     ErrImagePull   0          19s
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+4         <none>
+
+[root@k8s-master k8s-test]# kubectl rollout undo deployment nginx revision-2
+deployment.apps/nginx rolled back
+[root@k8s-master k8s-test]# kubectl rollout undo deployment nginx revision=2
+deployment.apps/nginx rolled back
+Error from server (NotFound): deployments.apps "revision=2" not found
+[root@k8s-master k8s-test]# kubectl rollout undo deployment nginx --to-revision=2
+deployment.apps/nginx rolled back
+[root@k8s-master k8s-test]# kubectl get pods 
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5b6f47948-nrrcj    1/1     Running             0          2m36s
+nginx-5b6f47948-zq94h    1/1     Running             0          2m45s
+nginx-5bf87f5f59-47ll8   0/1     ContainerCreating   0          3s
+nginx-7789688b8f-svkr6   0/1     Terminating         0          13s
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+5         <none>
+6         <none>
+7         <none>
+
+[root@k8s-master k8s-test]# kubectl rollout status deployment nginx
+Waiting for deployment "nginx" rollout to finish: 1 old replicas are pending termination...
+^C[root@k8s-master k8s-test]# kubectget pods 
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          31s
+nginx-5bf87f5f59-txkts   1/1     Running   0          21s
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx --revision=4
+error: unable to find the specified revision
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx --revision=3
+error: unable to find the specified revision
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx --revision=5
+deployment.apps/nginx with revision #5
+Pod Template:
+  Labels:	app=nginx
+	pod-template-hash=5b6f47948
+  Containers:
+   nginx:
+    Image:	nginx:1.7.8
+    Port:	80/TCP
+    Host Port:	0/TCP
+    Environment:	<none>
+    Mounts:	<none>
+  Volumes:	<none>
+
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx --revision=6
+deployment.apps/nginx with revision #6
+Pod Template:
+  Labels:	app=nginx
+	pod-template-hash=7789688b8f
+  Containers:
+   nginx:
+    Image:	nginx:1.91
+    Port:	80/TCP
+    Host Port:	0/TCP
+    Environment:	<none>
+    Mounts:	<none>
+  Volumes:	<none>
+
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx --revision=7
+deployment.apps/nginx with revision #7
+Pod Template:
+  Labels:	app=nginx
+	pod-template-hash=5bf87f5f59
+  Containers:
+   nginx:
+    Image:	nginx:1.7.9
+    Port:	80/TCP
+    Host Port:	0/TCP
+    Environment:	<none>
+    Mounts:	<none>
+  Volumes:	<none>
+
+[root@k8s-master k8s-test]# kubectl scale deployment nginx --replicas=5
+deployment.apps/nginx scaled
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running             0          110s
+nginx-5bf87f5f59-ggz7s   0/1     ContainerCreating   0          3s
+nginx-5bf87f5f59-h5ndq   0/1     ContainerCreating   0          3s
+nginx-5bf87f5f59-shcd5   0/1     ContainerCreating   0          3s
+nginx-5bf87f5f59-txkts   1/1     Running             0          100s
+[root@k8s-master k8s-test]# kubectl autoscale deployment nginx --min=5 --max=10 --cpu-percent=80
+horizontalpodautoscaler.autoscaling/nginx autoscaled
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          2m14s
+nginx-5bf87f5f59-ggz7s   1/1     Running   0          27s
+nginx-5bf87f5f59-h5ndq   1/1     Running   0          27s
+nginx-5bf87f5f59-shcd5   1/1     Running   0          27s
+nginx-5bf87f5f59-txkts   1/1     Running   0          2m4s
+[root@k8s-master k8s-test]# kubectl rollout pause deployment nginx
+deployment.apps/nginx paused
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          2m24s
+nginx-5bf87f5f59-ggz7s   1/1     Running   0          37s
+nginx-5bf87f5f59-h5ndq   1/1     Running   0          37s
+nginx-5bf87f5f59-shcd5   1/1     Running   0          37s
+nginx-5bf87f5f59-txkts   1/1     Running   0          2m14s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          2m26s
+nginx-5bf87f5f59-ggz7s   1/1     Running   0          39s
+nginx-5bf87f5f59-h5ndq   1/1     Running   0          39s
+nginx-5bf87f5f59-shcd5   1/1     Running   0          39s
+nginx-5bf87f5f59-txkts   1/1     Running   0          2m16s
+[root@k8s-master k8s-test]# kubectl set image deployment nginx nginx=nginx:1.9.1
+deployment.apps/nginx image updated
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          2m52s
+nginx-5bf87f5f59-ggz7s   1/1     Running   0          65s
+nginx-5bf87f5f59-h5ndq   1/1     Running   0          65s
+nginx-5bf87f5f59-shcd5   1/1     Running   0          65s
+nginx-5bf87f5f59-txkts   1/1     Running   0          2m42s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running   0          2m53s
+nginx-5bf87f5f59-ggz7s   1/1     Running   0          66s
+nginx-5bf87f5f59-h5ndq   1/1     Running   0          66s
+nginx-5bf87f5f59-shcd5   1/1     Running   0          66s
+nginx-5bf87f5f59-txkts   1/1     Running   0          2m43s
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+5         <none>
+6         <none>
+7         <none>
+
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+5         <none>
+6         <none>
+7         <none>
+
+[root@k8s-master k8s-test]# kubectl rollout resume deployment nginx
+deployment.apps/nginx resumed
+[root@k8s-master k8s-test]# kubectl rollout history deployment nginx
+deployment.apps/nginx 
+REVISION  CHANGE-CAUSE
+5         <none>
+6         <none>
+7         <none>
+8         <none>
+
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS              RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Running             0          3m23s
+nginx-5bf87f5f59-ggz7s   1/1     Terminating         0          96s
+nginx-5bf87f5f59-h5ndq   1/1     Running             0          96s
+nginx-5bf87f5f59-shcd5   1/1     Running             0          96s
+nginx-5bf87f5f59-txkts   1/1     Running             0          3m13s
+nginx-678645bf77-c6lhz   0/1     ContainerCreating   0          6s
+nginx-678645bf77-hmln5   0/1     ContainerCreating   0          5s
+nginx-678645bf77-nxqv8   0/1     ContainerCreating   0          4s
+[root@k8s-master k8s-test]# kubectl get hpa
+NAME    REFERENCE          TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+nginx   Deployment/nginx   <unknown>/80%   5         10        5          89s
+[root@k8s-master k8s-test]# kubectl delete hpa
+error: resource(s) were provided, but no name, label selector, or --all flag specified
+[root@k8s-master k8s-test]# kubectl delete hpa nginx
+horizontalpodautoscaler.autoscaling "nginx" deleted
+[root@k8s-master k8s-test]# kubectl delete deployment nginx
+deployment.apps "nginx" deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl get pods
+NAME                     READY   STATUS        RESTARTS   AGE
+nginx-5bf87f5f59-47ll8   1/1     Terminating   0          4m59s
+nginx-5bf87f5f59-h5ndq   1/1     Terminating   0          3m12s
+nginx-5bf87f5f59-shcd5   1/1     Terminating   0          3m12s
+nginx-5bf87f5f59-txkts   1/1     Terminating   0          4m49s
+nginx-678645bf77-c6lhz   0/1     Terminating   0          102s
+nginx-678645bf77-hmln5   0/1     Terminating   0          101s
+nginx-678645bf77-nxqv8   0/1     Terminating   0          100s
+[root@k8s-master k8s-test]# kubectl delete deployment nginx
+Error from server (NotFound): deployments.apps "nginx" not found
+[root@k8s-master k8s-test]# kubectl delete pods --all
+pod "nginx-5bf87f5f59-47ll8" deleted
+pod "nginx-5bf87f5f59-h5ndq" deleted
+pod "nginx-5bf87f5f59-shcd5" deleted
+pod "nginx-5bf87f5f59-txkts" deleted
+pod "nginx-678645bf77-hmln5" deleted
+pod "nginx-678645bf77-nxqv8" deleted
+
+[root@k8s-master k8s-test]# kubectl run busybox --image=busybox --restart=Never --schedule="*/1 * * * *" -- /bin/sh  'date; echo Hello from the Kubernetes cluster'
+Flag --schedule has been deprecated, has no effect and will be removed in the future.
+pod/busybox created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS   RESTARTS   AGE
+busybox   0/1     Error    0          14s
+[root@k8s-master k8s-test]# kubectl logs -f busybox
+/bin/sh: can't open 'date; echo Hello from the Kubernetes cluster': No such file or directory
+[root@k8s-master k8s-test]# kubectl delete pod busybox 
+pod "busybox" deleted
+[root@k8s-master k8s-test]# kubectl run busybox --image=busybox --restart=Never --schedule="*/1 * * * *" -- /bin/sh -c  'date; echo Hello from the Kubernetes cluster'
+Flag --schedule has been deprecated, has no effect and will be removed in the future.
+pod/busybox created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS              RESTARTS   AGE
+busybox   0/1     ContainerCreating   0          4s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS              RESTARTS   AGE
+busybox   0/1     ContainerCreating   0          6s
+[root@k8s-master k8s-test]# kubectl get pods -w
+NAME      READY   STATUS              RESTARTS   AGE
+busybox   0/1     ContainerCreating   0          8s
+busybox   0/1     Completed           0          15s
+^C[root@k8s-master k8s-test]kubectl logs -f busybox
+Fri May  1 09:48:15 UTC 2020
+Hello from the Kubernetes cluster
+
+
+
+
+
+CONFIGURATION (18%)
+-----------------------------------
+
+[root@k8s-master k8s-test]# kubectl create configmap config --from-literal=foo=lala --from-literal=foo2=lolo
+configmap/config created
+[root@k8s-master k8s-test]# kubectl get cm
+NAME     DATA   AGE
+config   2      4s
+[root@k8s-master k8s-test]# kubectl get cm config -o yaml 
+apiVersion: v1
+data:
+  foo: lala
+  foo2: lolo
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-05-01T09:51:21Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:foo: {}
+        f:foo2: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-01T09:51:21Z"
+  name: config
+  namespace: default
+  resourceVersion: "275937"
+  selfLink: /api/v1/namespaces/default/configmaps/config
+  uid: 3c5d1e40-4188-4d9d-8d48-af2d0c4d9547
+[root@k8s-master k8s-test]# vim config.txt
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.txt
+configmap/config1 created
+[root@k8s-master k8s-test]# kubectl get cm 
+NAME      DATA   AGE
+config    2      103s
+config1   1      3s
+[root@k8s-master k8s-test]# kubectl describe cm config1
+Name:         config1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo=lala
+foo2=lolo
+
+Events:  <none>
+[root@k8s-master k8s-test]# kubectl describe cm config
+Name:         config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+foo:
+----
+lala
+foo2:
+----
+lolo
+Events:  <none>
+[root@k8s-master k8s-test]# kubectl describe cm config1
+Name:         config1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo=lala
+foo2=lolo
+
+Events:  <none>
+[root@k8s-master k8s-test]# echo -e "foo3=lili\nfoo4=lele" > config.txt
+[root@k8s-master k8s-test]# cat config.txt 
+foo3=lili
+foo4=lele
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.txt
+Error from server (AlreadyExists): configmaps "config1" already exists
+[root@k8s-master k8s-test]# kubectl create configmap config2 --from-file=config.txt
+configmap/config2 created
+[root@k8s-master k8s-test]# kubectl describe cm config2
+Name:         config2
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo3=lili
+foo4=lele
+
+[root@k8s-master k8s-test]# kubectl create configmap config --from-literal=foo=lala --from-literal=foo2=lolo
+configmap/config created
+[root@k8s-master k8s-test]# kubectl get cm
+NAME     DATA   AGE
+config   2      4s
+[root@k8s-master k8s-test]# kubectl get cm config -o yaml 
+apiVersion: v1
+data:
+  foo: lala
+  foo2: lolo
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-05-01T09:51:21Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:foo: {}
+        f:foo2: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-05-01T09:51:21Z"
+  name: config
+  namespace: default
+  resourceVersion: "275937"
+  selfLink: /api/v1/namespaces/default/configmaps/config
+  uid: 3c5d1e40-4188-4d9d-8d48-af2d0c4d9547
+[root@k8s-master k8s-test]# vim config.txt
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.txt
+configmap/config1 created
+[root@k8s-master k8s-test]# kubectl get cm 
+NAME      DATA   AGE
+config    2      103s
+config1   1      3s
+[root@k8s-master k8s-test]# kubectl describe cm config1
+Name:         config1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo=lala
+foo2=lolo
+
+Events:  <none>
+[root@k8s-master k8s-test]# kubectl describe cm config
+Name:         config
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+foo:
+----
+lala
+foo2:
+----
+lolo
+Events:  <none>
+[root@k8s-master k8s-test]# kubectl describe cm config1
+Name:         config1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo=lala
+foo2=lolo
+
+Events:  <none>
+[root@k8s-master k8s-test]# echo -e "foo3=lili\nfoo4=lele" > config.txt
+[root@k8s-master k8s-test]# cat config.txt 
+foo3=lili
+foo4=lele
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.txt
+Error from server (AlreadyExists): configmaps "config1" already exists
+[root@k8s-master k8s-test]# kubectl create configmap config2 --from-file=config.txt
+configmap/config2 created
+[root@k8s-master k8s-test]# kubectl describe cm config2
+Name:         config2
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo3=lili
+foo4=lele
+
+Events:  <none>
+[root@k8s-master k8s-test]# kubectl delete cm config2
+configmap "config2" deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# ls
+config.txt    multicon.yml  podd2.yml  podlabel.yml  task1.yml  task3.yml  task5.yml  task7.yml
+deploy1.yaml  podd1.yml     podd3.yml  task10.yml    task2.yml  task4.yml  task6.yml
+[root@k8s-master k8s-test]# vim config.txt 
+[root@k8s-master k8s-test]# kubectl delete cm config1
+configmap "config1" deleted
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.txt
+configmap/config1 created
+[root@k8s-master k8s-test]# kubectl describe cm config1
+Name:         config1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.txt:
+----
+foo=lala
+foo2=lolo
+
+Events:  <none>
+[root@k8s-master k8s-test]# 
+
+[root@k8s-master k8s-test]# echo -e "var1=val1\n# this is a comment\n\nvar2=val2\n#anothercomment" > config.env
+[root@k8s-master k8s-test]# ls
+config.env  deploy1.yaml  podd1.yml  podd3.yml     task10.yml  task2.yml  task4.yml  task6.yml
+config.txt  multicon.yml  podd2.yml  podlabel.yml  task1.yml   task3.yml  task5.yml  task7.yml
+[root@k8s-master k8s-test]# cat config.env 
+var1=val1
+# this is a comment
+
+var2=val2
+#anothercomment
+[root@k8s-master k8s-test]# kubectl create configmap config1 --from-file=config.env
+Error from server (AlreadyExists): configmaps "config1" already exists
+[root@k8s-master k8s-test]# kubectl create configmap configenv --from-file=config.env
+configmap/configenv created
+[root@k8s-master k8s-test]# kubectl describe cm configenv 
+Name:         configenv
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+config.env:
+----
+var1=val1
+# this is a comment
+
+var2=val2
+#anothercomment
+
+Events:  <none>
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# echo -e "var3=val3\nvar4=val4" > config4.txt
+[root@k8s-master k8s-test]# ls
+config4.txt  deploy1.yaml  podd2.yml     task10.yml  task3.yml  task6.yml
+config.env   multicon.yml  podd3.yml     task1.yml   task4.yml  task7.yml
+config.txt   podd1.yml     podlabel.yml  task2.yml   task5.yml
+[root@k8s-master k8s-test]# cat config4.txt 
+var3=val3
+var4=val4
+[root@k8s-master k8s-test]# kubectl create configmap configenv --from-file=special=config4.txt
+Error from server (AlreadyExists): configmaps "configenv" already exists
+[root@k8s-master k8s-test]# kubectl create configmap configspecial --from-file=special=config4.txt
+configmap/configspecial created
+[root@k8s-master k8s-test]# kubectl get cm 
+NAME            DATA   AGE
+config          2      5m58s
+config1         1      2m25s
+configenv       1      74s
+configspecial   1      3s
+[root@k8s-master k8s-test]# kubectl describe cm configspecial 
+Name:         configspecial
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+special:
+----
+var3=val3
+var4=val4
+
+Events:  <none>
+[root@k8s-master k8s-test]# cat config4.txt 
+var3=val3
+var4=val4
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl create configmap options --from-literal=var5=val5
+configmap/options created
+[root@k8s-master k8s-test]# kubectl get cm 
+NAME            DATA   AGE
+config          2      7m29s
+config1         1      3m56s
+configenv       1      2m45s
+configspecial   1      94s
+options         1      3s
+[root@k8s-master k8s-test]# kubectl describe cm options
+Name:         options
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+var5:
+----
+val5
+Events:  <none>
+[root@k8s-master k8s-test]# 
+
+
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > cmpod.yaml
+W0501 15:29:23.253355   23167 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim cmpod.yaml 
+[root@k8s-master k8s-test]# kubectl describe cm options
+Name:         options
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+var5:
+----
+val5
+Events:  <none>
+[root@k8s-master k8s-test]# vim cmpod.yaml 
+[root@k8s-master k8s-test]# vim cmpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f cmpod.yaml 
+
+[root@k8s-master k8s-test]# kubectl create -f cmpod.yaml 
+pod/nginx created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS              RESTARTS   AGE
+busybox   0/1     Completed           0          14m
+nginx     0/1     ContainerCreating   0          4s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS      RESTARTS   AGE
+busybox   0/1     Completed   0          14m
+nginx     1/1     Running     0          15s
+[root@k8s-master k8s-test]# kubectl exec -it nginx -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginx
+TERM=xterm
+option=val5
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+NGINX_VERSION=1.17.10
+NJS_VERSION=0.3.9
+PKG_RELEASE=1~buster
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl create configmap anotherone --from-literal=var6=val6 --from-literal=var7=val7
+configmap/anotherone created
+[root@k8s-master k8s-test]# cp cmpod.yaml cmpod1.yaml 
+[root@k8s-master k8s-test]# vim cmpod1.yaml 
+[root@k8s-master k8s-test]# vim cmpod1.yaml 
+[root@k8s-master k8s-test]# kubectl create -f cmpod1.yaml 
+pod/nginx1 created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME      READY   STATUS              RESTARTS   AGE
+busybox   0/1     Completed           0          18m
+nginx     1/1     Running             0          3m36s
+nginx1    0/1     ContainerCreating   0          5s
+[root@k8s-master k8s-test]# kubectl exec -it nginx1 -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginx1
+TERM=xterm
+var6=val6
+var7=val7
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+NGINX_VERSION=1.17.10
+NJS_VERSION=0.3.9
+PKG_RELEASE=1~buster
+HOME=/root
+[root@k8s-master k8s-test]# kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+[root@k8s-master k8s-test]# kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+configmap/cmvolume created
+[root@k8s-master k8s-test]# cp cmpod1.yaml volpod1.yml
+[root@k8s-master k8s-test]# vim volpod1.yml 
+[root@k8s-master k8s-test]# kubectl create -f volpod1.yml 
+[root@k8s-master k8s-test]# kubectl create -f volpod1.yml 
+pod/nginxvol created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME       READY   STATUS              RESTARTS   AGE
+busybox    0/1     Completed           0          23m
+nginx      1/1     Running             0          8m31s
+nginx1     1/1     Running             0          5m
+nginxvol   0/1     ContainerCreating   0          5s
+
+[root@k8s-master k8s-test]# kubectl exec -it nginxvol  /bin/sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+# 
+# 
+# cd /etc/lala
+# ls
+var8  var9
+# cat var8 	
+val8# cat var9
+val9# 
+
+[root@k8s-master k8s-test]# kubectl run nginxlimit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml 
+W0501 15:45:23.378216    6428 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginxlimit
+  name: nginxlimit
+spec:
+  containers:
+  - image: nginx
+    name: nginxlimit
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+[root@k8s-master k8s-test]# kubectl run nginxlimit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml > limitspod.yml
+W0501 15:45:29.547546    6521 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl create -f limitspod.yml 
+pod/nginxlimit created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS              RESTARTS   AGE
+busybox      0/1     Completed           0          27m
+nginx        1/1     Running             0          13m
+nginx1       1/1     Running             0          9m31s
+nginxlimit   0/1     ContainerCreating   0          5s
+nginxvol     1/1     Running             0          4m36s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          28m
+nginx        1/1     Running     0          13m
+nginx1       1/1     Running     0          9m59s
+nginxlimit   1/1     Running     0          33s
+nginxvol     1/1     Running     0          5m4s
+[root@k8s-master k8s-test]# kubectl create secret generic mysecret --from-literal=password=mypass
+secret/mysecret created
+[root@k8s-master k8s-test]# kubectl describe limits 
+No resources found in default namespace.
+[root@k8s-master k8s-test]# kubectl describe pod nginxlimit 
+Name:         nginxlimit
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 15:45:37 +0530
+Labels:       run=nginxlimit
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.132/32
+Status:       Running
+IP:           192.168.254.132
+IPs:
+  IP:  192.168.254.132
+Containers:
+  nginxlimit:
+    Container ID:   docker://3b0b1edf9fa3a4c0d679d98413625c19298b54f6777a596995897c33e20e5570
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 01 May 2020 15:45:44 +0530
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  512Mi
+    Requests:
+      cpu:        100m
+      memory:     256Mi
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginxlimit to k8s-worker
+  Normal  Pulling    53s        kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     49s        kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    49s        kubelet, k8s-worker  Created container nginxlimit
+  Normal  Started    48s        kubelet, k8s-worker  Started container nginxlimit
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# echo -n admin > username
+[root@k8s-master k8s-test]# kubectl create secret generic mysecret2 --from-file=username
+secret/mysecret2 created
+[root@k8s-master k8s-test]# kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+default-token-x945s   kubernetes.io/service-account-token   3      19d
+mysecret              Opaque                                1      58s
+mysecret2             Opaque                                1      12s
+[root@k8s-master k8s-test]# kubectl describe secret mysecret2 
+Name:         mysecret2
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+username:  5 bytes
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+
+
+
+
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > secretpod.yaml
+W0501 15:47:39.600789    8714 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim secretpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f secretpod.yaml 
+pod/nginxsecret created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME          READY   STATUS              RESTARTS   AGE
+busybox       0/1     Completed           0          31m
+nginx         1/1     Running             0          16m
+nginx1        1/1     Running             0          13m
+nginxlimit    1/1     Running             0          3m41s
+nginxsecret   0/1     ContainerCreating   0          3s
+nginxvol      1/1     Running             0          8m12s
+[root@k8s-master k8s-test]# kubectl exec -it nginxsecret /bin/bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+root@nginxsecret:/# 
+root@nginxsecret:/# 
+root@nginxsecret:/# 
+root@nginxsecret:/# cd /etc
+[root@k8s-master k8s-test]# kubectl run nginxlimit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml 
+W0501 15:45:23.378216    6428 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginxlimit
+  name: nginxlimit
+spec:
+  containers:
+  - image: nginx
+    name: nginxlimit
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+[root@k8s-master k8s-test]# kubectl run nginxlimit --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml > limitspod.yml
+W0501 15:45:29.547546    6521 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# kubectl create -f limitspod.yml 
+pod/nginxlimit created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS              RESTARTS   AGE
+busybox      0/1     Completed           0          27m
+nginx        1/1     Running             0          13m
+nginx1       1/1     Running             0          9m31s
+nginxlimit   0/1     ContainerCreating   0          5s
+nginxvol     1/1     Running             0          4m36s
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          28m
+nginx        1/1     Running     0          13m
+nginx1       1/1     Running     0          9m59s
+nginxlimit   1/1     Running     0          33s
+nginxvol     1/1     Running     0          5m4s
+[root@k8s-master k8s-test]# kubectl create secret generic mysecret --from-literal=password=mypass
+secret/mysecret created
+[root@k8s-master k8s-test]# kubectl describe limits 
+No resources found in default namespace.
+[root@k8s-master k8s-test]# kubectl describe pod nginxlimit 
+Name:         nginxlimit
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 15:45:37 +0530
+Labels:       run=nginxlimit
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.132/32
+Status:       Running
+IP:           192.168.254.132
+IPs:
+  IP:  192.168.254.132
+Containers:
+  nginxlimit:
+    Container ID:   docker://3b0b1edf9fa3a4c0d679d98413625c19298b54f6777a596995897c33e20e5570
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 01 May 2020 15:45:44 +0530
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  512Mi
+    Requests:
+      cpu:        100m
+      memory:     256Mi
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-x945s (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-x945s:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-x945s
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginxlimit to k8s-worker
+  Normal  Pulling    53s        kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     49s        kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    49s        kubelet, k8s-worker  Created container nginxlimit
+  Normal  Started    48s        kubelet, k8s-worker  Started container nginxlimit
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# echo -n admin > username
+[root@k8s-master k8s-test]# kubectl create secret generic mysecret2 --from-file=username
+secret/mysecret2 created
+[root@k8s-master k8s-test]# kubectl get secret
+NAME                  TYPE                                  DATA   AGE
+default-token-x945s   kubernetes.io/service-account-token   3      19d
+mysecret              Opaque                                1      58s
+mysecret2             Opaque                                1      12s
+[root@k8s-master k8s-test]# kubectl describe secret mysecret2 
+Name:         mysecret2
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+username:  5 bytes
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+
+
+
+
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > secretpod.yaml
+W0501 15:47:39.600789    8714 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim secretpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f secretpod.yaml 
+pod/nginxsecret created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME          READY   STATUS              RESTARTS   AGE
+busybox       0/1     Completed           0          31m
+nginx         1/1     Running             0          16m
+nginx1        1/1     Running             0          13m
+nginxlimit    1/1     Running             0          3m41s
+nginxsecret   0/1     ContainerCreating   0          3s
+nginxvol      1/1     Running             0          8m12s
+[root@k8s-master k8s-test]# kubectl exec -it nginxsecret /bin/bash
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
+root@nginxsecret:/# 
+root@nginxsecret:/# 
+root@nginxsecret:/# 
+root@nginxsecret:/# cd /etc
+root@nginxsecret:/etc# cd foo/
+root@nginxsecret:/etc/foo# ls
+username
+root@nginxsecret:/etc/foo# cat username 
+adminroot@nginxsecret:/etc/foo# exit
+[root@k8s-master k8s-test]# kubectl delete po nginxsecret 
+pod "nginxsecret" deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl get sa --all-namespaces
+NAMESPACE         NAME                                 SECRETS   AGE
+default           default                              1         19d
+kube-node-lease   default                              1         19d
+kube-public       default                              1         19d
+kube-system       attachdetach-controller              1         19d
+kube-system       bootstrap-signer                     1         19d
+kube-system       calico-kube-controllers              1         19d
+kube-system       calico-node                          1         19d
+kube-system       certificate-controller               1         19d
+kube-system       clusterrole-aggregation-controller   1         19d
+kube-system       coredns                              1         19d
+kube-system       cronjob-controller                   1         19d
+kube-system       daemon-set-controller                1         19d
+kube-system       default                              1         19d
+kube-system       deployment-controller                1         19d
+kube-system       disruption-controller                1         19d
+kube-system       endpoint-controller                  1         19d
+kube-system       endpointslice-controller             1         19d
+kube-system       expand-controller                    1         19d
+kube-system       generic-garbage-collector            1         19d
+kube-system       horizontal-pod-autoscaler            1         19d
+kube-system       job-controller                       1         19d
+kube-system       kube-proxy                           1         19d
+kube-system       namespace-controller                 1         19d
+kube-system       node-controller                      1         19d
+kube-system       persistent-volume-binder             1         19d
+kube-system       pod-garbage-collector                1         19d
+kube-system       pv-protection-controller             1         19d
+kube-system       pvc-protection-controller            1         19d
+kube-system       replicaset-controller                1         19d
+kube-system       replication-controller               1         19d
+kube-system       resourcequota-controller             1         19d
+kube-system       service-account-controller           1         19d
+kube-system       service-controller                   1         19d
+kube-system       statefulset-controller               1         19d
+kube-system       token-cleaner                        1         19d
+kube-system       ttl-controller                       1         19d
+mynamespace       default                              1         110m
+[root@k8s-master k8s-test]# kubectl create sa myuser
+serviceaccount/myuser created
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run > sapod.yaml
+[root@k8s-master k8s-test]# kubectl run nginxsa --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run > sapod.yaml
+W0501 15:51:33.784186   12421 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim sapod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f sapod.yaml 
+pod/nginxsa created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS              RESTARTS   AGE
+busybox      0/1     Completed           0          33m
+nginx        1/1     Running             0          19m
+nginx1       1/1     Running             0          15m
+nginxlimit   1/1     Running             0          6m17s
+nginxsa      0/1     ContainerCreating   0          5s
+nginxvol     1/1     Running             0          10m
+[root@k8s-master k8s-test]# kubectl describe pod nginxsa
+Name:         nginxsa
+Namespace:    default
+Priority:     0
+Node:         k8s-worker/192.168.122.25
+Start Time:   Fri, 01 May 2020 15:51:48 +0530
+Labels:       run=nginxsa
+Annotations:  cni.projectcalico.org/podIP: 192.168.254.135/32
+Status:       Running
+IP:           192.168.254.135
+IPs:
+  IP:  192.168.254.135
+Containers:
+  nginxsa:
+    Container ID:   docker://aa1413cd4e094835aa4f175de1fd19c519079a2c9428d1d259e6d57ca05eedee
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:86ae264c3f4acb99b2dee4d0098c40cb8c46dcf9e1148f05d3a51c4df6758c12
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 01 May 2020 15:51:56 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from myuser-token-shhwt (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  myuser-token-shhwt:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  myuser-token-shhwt
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                 Message
+  ----    ------     ----       ----                 -------
+  Normal  Scheduled  <unknown>  default-scheduler    Successfully assigned default/nginxsa to k8s-worker
+  Normal  Pulling    10s        kubelet, k8s-worker  Pulling image "nginx"
+  Normal  Pulled     6s         kubelet, k8s-worker  Successfully pulled image "nginx"
+  Normal  Created    6s         kubelet, k8s-worker  Created container nginxsa
+  Normal  Started    5s         kubelet, k8s-worker  Started container nginxsa
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# ls
+cmpod1.yaml  config.txt     podd1.yml     sapod.yaml      task2.yml  task6.yml
+cmpod.yaml   deploy1.yaml   podd2.yml     secretpod.yaml  task3.yml  task7.yml
+config4.txt  limitspod.yml  podd3.yml     task10.yml      task4.yml  username
+config.env   multicon.yml   podlabel.yml  task1.yml       task5.yml  volpod1.yml
+[root@k8s-master k8s-test]# kubectl get pods
+NAME         READY   STATUS      RESTARTS   AGE
+busybox      0/1     Completed   0          34m
+nginx        1/1     Running     0          19m
+nginx1       1/1     Running     0          16m
+nginxlimit   1/1     Running     0          7m
+nginxsa      1/1     Running     0          48s
+nginxvol     1/1     Running     0          11m
+[root@k8s-master k8s-test]# kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > newsecretpod.yaml
+W0501 15:52:49.999040   13665 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+[root@k8s-master k8s-test]# vim newsecretpod.yaml 
+[root@k8s-master k8s-test]# vim newsecretpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f 
+cmpod1.yaml        newsecretpod.yaml  sapod.yaml         task3.yml          volpod1.yml
+cmpod.yaml         podd1.yml          secretpod.yaml     task4.yml          
+deploy1.yaml       podd2.yml          task10.yml         task5.yml          
+limitspod.yml      podd3.yml          task1.yml          task6.yml          
+multicon.yml       podlabel.yml       task2.yml          task7.yml          
+[root@k8s-master k8s-test]# kubectl create -f newsecretpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f newsecretpod.yaml 
+pod/nginxnewsecret created
+[root@k8s-master k8s-test]# kubectl get secret 
+NAME                  TYPE                                  DATA   AGE
+default-token-x945s   kubernetes.io/service-account-token   3      19d
+mysecret              Opaque                                1      9m9s
+mysecret2             Opaque                                1      8m23s
+myuser-token-shhwt    kubernetes.io/service-account-token   3      4m22s
+[root@k8s-master k8s-test]# kubectl describe secret mysecret2
+Name:         mysecret2
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+username:  5 bytes
+[root@k8s-master k8s-test]# kubectl get pods
+NAME             READY   STATUS                       RESTARTS   AGE
+busybox          0/1     Completed                    0          37m
+nginx            1/1     Running                      0          22m
+nginx1           1/1     Running                      0          19m
+nginxlimit       1/1     Running                      0          9m55s
+nginxnewsecret   0/1     CreateContainerConfigError   0          16s
+nginxsa          1/1     Running                      0          3m43s
+nginxvol         1/1     Running                      0          14m
+[root@k8s-master k8s-test]# kubectl delete pod nginxnewsecret --force
+warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+pod "nginxnewsecret" force deleted
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# vim newsecretpod.yaml 
+[root@k8s-master k8s-test]# kubectl create -f newsecretpod.yaml 
+pod/nginxnewsecret created
+[root@k8s-master k8s-test]# kubectl get pods
+NAME             READY   STATUS              RESTARTS   AGE
+busybox          0/1     Completed           0          38m
+nginx            1/1     Running             0          24m
+nginx1           1/1     Running             0          20m
+nginxlimit       1/1     Running             0          11m
+nginxnewsecret   0/1     ContainerCreating   0          2s
+nginxsa          1/1     Running             0          5m4s
+nginxvol         1/1     Running             0          15m
+[root@k8s-master k8s-test]# kubectl get pods -w
+NAME             READY   STATUS              RESTARTS   AGE
+busybox          0/1     Completed           0          38m
+nginx            1/1     Running             0          24m
+nginx1           1/1     Running             0          20m
+nginxlimit       1/1     Running             0          11m
+nginxnewsecret   0/1     ContainerCreating   0          4s
+nginxsa          1/1     Running             0          5m6s
+nginxvol         1/1     Running             0          15m
+nginxnewsecret   0/1     ContainerCreating   0          6s
+nginxnewsecret   1/1     Running             0          12s
+^C[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# kubectl get pods
+NAME             READY   STATUS      RESTARTS   AGE
+busybox          0/1     Completed   0          39m
+nginx            1/1     Running     0          24m
+nginx1           1/1     Running     0          21m
+nginxlimit       1/1     Running     0          11m
+nginxnewsecret   1/1     Running     0          20s
+nginxsa          1/1     Running     0          5m22s
+nginxvol         1/1     Running     0          16m
+[root@k8s-master k8s-test]# kubectl exec -it nginxnewsecret -- env
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginxnewsecret
+TERM=xterm
+USERNAME=admin
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+NGINX_VERSION=1.17.10
+NJS_VERSION=0.3.9
+PKG_RELEASE=1~buster
+HOME=/root
+[root@k8s-master k8s-test]# 
+[root@k8s-master k8s-test]# ls
+cmpod1.yaml  config.txt     newsecretpod.yaml  podlabel.yml    task1.yml  task5.yml  volpod1.yml
+cmpod.yaml   deploy1.yaml   podd1.yml          sapod.yaml      task2.yml  task6.yml
+config4.txt  limitspod.yml  podd2.yml          secretpod.yaml  task3.yml  task7.yml
+config.env   multicon.yml   podd3.yml          task10.yml      task4.yml  username
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
